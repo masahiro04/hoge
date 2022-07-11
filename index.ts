@@ -33,36 +33,7 @@ const divisions: Division[] = [
   },
 ];
 
-// type Result = {
-//   node: Division;
-//   parent: Division;
-// };
-//
-// const findDivision = (
-//   parent: Division, arr: Array<Division>, divisionId: string,
-// ): Result => {
-//   // TODO(okubo): index取得でarrayの中の場所確認できる
-//   // TODO(okubo): 親 or 子供
-//   let newParent: Division = parent;
-//   let newDivision: Division | null = null;
-//
-//   const result: Result = arr.map((division: Division) => {
-//     if (division.division_id == divisionId) {
-//       return { node: division, parent:  }
-//     }
-//   });
-//
-//   return findDivision(newParent, );
-// };
-//
-// const getParent = (divisionId: string): Array<Division> => {};
-//
-// const getChildren = (divisionId: string): Array<Division> => {
-//   const index: number = divisions.indexOf();
-// };
-//
-
-const data: Array<Division> = [
+const divisionData: Array<Division> = [
   { division_id: "hoge1", children: [] },
   {
     division_id: "hoge2",
@@ -103,7 +74,9 @@ const data: Array<Division> = [
 ];
 
 function findById(data: Array<Division>, division_id: string): Division {
+  // TODO(okubo): 可能なら肩入れる
   let result: any;
+  let parent: any;
   data.some(iter);
   function iter(a: Division): boolean {
     if (a.division_id === division_id) {
@@ -115,4 +88,61 @@ function findById(data: Array<Division>, division_id: string): Division {
   return result;
 }
 
-console.log(findById(data, 'fizz5'));
+console.log(findById(divisionData, "fizz5"));
+
+
+
+const data: any = {
+  "uuid": "707a5ffd-68e2-4dbd-b539-128512ba3a0a",
+  "type": "page",
+  "items": [
+    {
+      "uuid": "9d823429-cc24-444d-a21c-a81357305851",
+      "title": "1",
+      "type": "question",
+    },
+    {
+      "type": "section",
+      "title": "2",
+      "uuid": "346dec94-124c-4932-bd40-af9dc68f1d27",
+      "items": [
+        {
+          "uuid": "bf0a9ab9-99cc-4833-b3d3-84a97072e85f",
+          "title": "2.1",
+          "type": "question",
+        }
+      ],
+    },
+    {
+      "type": "section",
+      "title": "3",
+      "uuid": "4964096d-0de9-4ab1-ace5-e42516d6b866",
+      "items": [
+        {
+          "uuid": "b2170580-1e2e-4fb4-a7b9-a56b79db21b3",
+          "title": "3.1",
+          "type": "question",
+        }
+      ],
+    }
+  ],
+  "params": {
+    "collapsed": false
+  }
+};
+
+
+const findItemParent = (root: any, id: any, parent = null): any => {
+  if (root.uuid === id) return parent;
+  if ('items' in root) {
+    for (const i of root.items) {
+      const r = findItemParent(i, id, root);
+      if (r) return r;
+    }
+  }
+  return null;
+};
+
+const p = findItemParent(data, "b2170580-1e2e-4fb4-a7b9-a56b79db21b3");
+
+if (p) console.log(p.title, p.type, p.uuid);
