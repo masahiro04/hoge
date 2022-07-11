@@ -90,59 +90,135 @@ function findById(data: Array<Division>, division_id: string): Division {
 
 console.log(findById(divisionData, "fizz5"));
 
+// const data: any = {
+//   "uuid": "707a5ffd-68e2-4dbd-b539-128512ba3a0a",
+//   "type": "page",
+//   "items": [
+//     {
+//       "uuid": "9d823429-cc24-444d-a21c-a81357305851",
+//       "title": "1",
+//       "type": "question",
+//     },
+//     {
+//       "type": "section",
+//       "title": "2",
+//       "uuid": "346dec94-124c-4932-bd40-af9dc68f1d27",
+//       "items": [
+//         {
+//           "uuid": "bf0a9ab9-99cc-4833-b3d3-84a97072e85f",
+//           "title": "2.1",
+//           "type": "question",
+//         }
+//       ],
+//     },
+//     {
+//       "type": "section",
+//       "title": "3",
+//       "uuid": "4964096d-0de9-4ab1-ace5-e42516d6b866",
+//       "items": [
+//         {
+//           "uuid": "b2170580-1e2e-4fb4-a7b9-a56b79db21b3",
+//           "title": "3.1",
+//           "type": "question",
+//         }
+//       ],
+//     }
+//   ],
+//   "params": {
+//     "collapsed": false
+//   }
+// };
 
+// const findItemParent = (root: Division, division_id: string, parent = null): any => {
+//   if (root.division_id === division_id) return parent;
+//   if ("children" in root) {
+//     for (const i of root.children) {
+//       const r = findItemParent(i, division_id, root);
+//       if (r) return r;
+//     }
+//   }
+//   return null;
+// };
+//
+// const p = findItemParent(divisionData, "b2170580-1e2e-4fb4-a7b9-a56b79db21b3");
+//
+// if (p) console.log(p.title, p.type, p.uuid);
 
-const data: any = {
-  "uuid": "707a5ffd-68e2-4dbd-b539-128512ba3a0a",
-  "type": "page",
-  "items": [
-    {
-      "uuid": "9d823429-cc24-444d-a21c-a81357305851",
-      "title": "1",
-      "type": "question",
-    },
-    {
-      "type": "section",
-      "title": "2",
-      "uuid": "346dec94-124c-4932-bd40-af9dc68f1d27",
-      "items": [
-        {
-          "uuid": "bf0a9ab9-99cc-4833-b3d3-84a97072e85f",
-          "title": "2.1",
-          "type": "question",
-        }
-      ],
-    },
-    {
-      "type": "section",
-      "title": "3",
-      "uuid": "4964096d-0de9-4ab1-ace5-e42516d6b866",
-      "items": [
-        {
-          "uuid": "b2170580-1e2e-4fb4-a7b9-a56b79db21b3",
-          "title": "3.1",
-          "type": "question",
-        }
-      ],
-    }
-  ],
-  "params": {
-    "collapsed": false
-  }
+//
+type HogeNode = {
+  name: string;
+  tree: Array<HogeNode>;
 };
+var hogeNodes: Array<HogeNode> = [
+  {
+    name: "name1",
+    tree: [
+      { name: "name2", tree: [] },
+      { name: "name3", tree: [] },
+      {
+        name: "name4",
+        tree: [
+          { name: "name5", tree: [] },
+          { name: "name6", tree: [] },
+        ],
+      },
+      {
+        name: "name7",
+        tree: [
+          { name: "name10", tree: [] },
+          { name: "name11", tree: [] },
+        ],
+      },
+    ],
+  },
+  {
+    name: "name8",
+    tree: [{ name: "name9", tree: [] }],
+  },
+  {
+    name: "name20",
+    tree: [
+      {
+        name: "name21",
+        tree: [
+          { name: "name22", tree: [] },
+          { name: "name23", tree: [] },
+          { name: "name24", tree: [] },
+        ],
+      },
+    ],
+  },
+];
 
+function findParent(node: HogeNode, searchForName: any): any {
+  if (node.name === searchForName) {
+    return [];
+  }
 
-const findItemParent = (root: any, id: any, parent = null): any => {
-  if (root.uuid === id) return parent;
-  if ('items' in root) {
-    for (const i of root.items) {
-      const r = findItemParent(i, id, root);
-      if (r) return r;
+  for (var treeNode of node.tree) {
+    const childResult = findParent(treeNode, searchForName);
+
+    if (Array.isArray(childResult)) {
+      console.log("------------");
+      console.log(childResult);
+      console.log("------------");
+      return [treeNode.name].concat(childResult);
     }
   }
-  return null;
-};
+}
 
-const p = findItemParent(data, "b2170580-1e2e-4fb4-a7b9-a56b79db21b3");
+function handleFindParent(nodes: Array<HogeNode>, target: string): HogeNode|null {
+  // loopの必要あり
+  let searchedParentNode: HogeNode | null = null;
 
-if (p) console.log(p.title, p.type, p.uuid);
+  for (let node of hogeNodes) {
+    console.log();
+    const _searchedParent = findParent(node,target);
+    if (_searchedParent !== undefined || _searchedParent !== null) {
+      searchedParentNode = _searchedParent;
+    }
+  }
+  return searchedParentNode;
+}
+
+console.log(handleFindParent(hogeNodes, 'name22'));
